@@ -1,0 +1,527 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ĐI CHỢ THÔNG MINH</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;color:#29445c;
+ background:linear-gradient(135deg,#d9f4ff,#fff2c9,#ffe2e9);
+}
+button{cursor:pointer;border:0;font-weight:bold;transition:.2s}
+button:hover{transform:translateY(-3px);filter:brightness(1.05)}
+button:active{transform:scale(.96)}
+.app{max-width:1400px;margin:auto;padding:18px}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{font-size:25px;font-weight:1000;color:#2589bd}
+.score,.sound{
+ padding:12px 20px;border-radius:30px;background:white;
+ font-size:18px;box-shadow:0 4px 12px #7892a533
+}
+.screen{display:none}
+.screen.active{display:block;animation:appear .4s}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.panel{
+ background:#ffffffed;border:5px solid white;border-radius:28px;
+ padding:25px;margin-top:18px;box-shadow:0 12px 30px #54748b30
+}
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:25px;min-height:75vh}
+h1{font-size:clamp(42px,6vw,80px);color:#ef9137;line-height:1.05}
+.hero p{font-size:22px;line-height:1.5;font-weight:bold}
+.hero-art{width:100%;max-height:520px;object-fit:contain}
+.characters{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.characters img{width:105px;height:115px;object-fit:contain}
+.main{
+ background:linear-gradient(#ffbd55,#ff8738);color:white;
+ padding:17px 32px;border-radius:18px;font-size:23px;
+ box-shadow:0 6px 0 #d96b2c;margin-top:15px
+}
+.secondary{background:#e2f4ff;color:#237eac;padding:13px 20px;border-radius:14px}
+h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
+.instruction{font-size:20px;font-weight:bold;line-height:1.5}
+.goods{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.good{
+ background:white;border:3px solid #e1eff6;border-radius:20px;
+ min-height:155px;padding:10px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:8px;
+ box-shadow:0 5px 12px #45647b20
+}
+.good img{width:100%;height:105px;object-fit:contain}
+.good span{font-size:17px;font-weight:bold}
+.good.selected{border-color:#42bd79;background:#e6fff0}
+.basket{
+ background:#fff2ce;border:3px dashed #e7b64c;border-radius:22px;
+ padding:18px;text-align:center;margin-top:18px
+}
+.basket img{height:110px;max-width:150px;object-fit:contain}
+.basket h3{font-size:23px;color:#a96d1b}
+.actions{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-top:20px}
+.feedback{
+ display:none;padding:16px;border-radius:16px;text-align:center;
+ font-size:19px;font-weight:bold;margin-top:18px;line-height:1.5
+}
+.feedback.show{display:block}
+.goodfeed{background:#e0ffea;color:#18834b}
+.badfeed{background:#fff0e6;color:#b65c30}
+.question{text-align:center;font-size:27px;font-weight:bold;margin:30px auto;max-width:1000px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;max-width:1000px;margin:auto}
+.answer{
+ background:white;border:3px solid #dcecf5;border-radius:18px;
+ padding:20px;font-size:20px;color:#29445c
+}
+.answer.correct{background:#dfffea;border-color:#42bd79}
+.answer.wrong{background:#ffebe5;border-color:#f28b6b}
+.answer:disabled{cursor:default;transform:none}
+.progress{height:13px;background:#e6edf1;border-radius:20px;overflow:hidden}
+.progress div{height:100%;background:#55c68a;width:0;transition:.3s}
+.budgetbar{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px}
+.budget{background:#fff0b9;padding:13px 18px;border-radius:14px;font-size:20px;font-weight:bold}
+.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.shopitem{
+ display:grid;grid-template-columns:75px 1fr auto;align-items:center;
+ background:white;padding:12px;border-radius:16px;gap:10px
+}
+.shopitem img{width:70px;height:65px;object-fit:contain}
+.shopitem b{font-size:18px}
+.shopitem small{display:block;color:#71869a;margin-top:5px}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:34px;height:34px;border-radius:10px;background:#e2f4ff;font-size:22px}
+.qty strong{font-size:20px}
+.result{text-align:center}
+.trophy{width:220px;height:200px;object-fit:contain}
+.result h2{color:#ec943b}
+.result p{font-size:23px;font-weight:bold}
+.stars{font-size:40px;color:#f5b72c}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:10}
+.confetti i{
+ position:absolute;top:-30px;left:var(--x);width:10px;height:18px;
+ background:hsl(var(--h),90%,60%);animation:fall 3s linear forwards
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(700deg);opacity:.2}}
+@media(max-width:850px){
+ .hero{grid-template-columns:1fr;text-align:center}
+ .hero-art{max-height:350px}
+ .goods{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:550px){
+ .goods{grid-template-columns:repeat(2,1fr)}
+ .answers,.shopgrid{grid-template-columns:1fr}
+ .panel{padding:15px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+ <div class="logo">🛒 ĐI CHỢ THÔNG MINH</div>
+ <div class="score">⭐ Điểm: <span id="score">0</span></div>
+ <button class="sound" id="soundBtn" onclick="toggleSound()">🔊 Âm thanh: Bật</button>
+</header>
+
+<!-- MÀN HÌNH GIỚI THIỆU -->
+<section id="intro" class="screen active">
+ <div class="panel hero">
+  <div>
+   <h1>ĐI CHỢ<br>THÔNG MINH!</h1>
+   <p>
+    Chào mừng các bạn nhỏ đến với khu chợ vui nhộn!
+    Hãy cùng lựa chọn hàng hóa cần thiết, mua sắm hợp lí
+    và học cách tiết kiệm cho gia đình nhé!
+   </p>
+   <div class="characters">
+    <img src="assets/Cô bé học sinh vui nhộn 9 khung.gif">
+    <img src="assets/Cậu bé vui nhộn trong chín khung hình chuyển động.gif">
+    <img src="assets/Gấu Nâu Vui Nhộn Trong Chín Khung Hình.gif">
+   </div>
+   <button class="main" onclick="startGame()">▶ BẮT ĐẦU</button>
+  </div>
+  <img class="hero-art" src="assets/1.png" alt="Khu chợ">
+ </div>
+</section>
+
+<!-- VÒNG 1 -->
+<section id="round1" class="screen">
+ <div class="panel">
+  <h2>🧺 VÒNG 1: GIỎ HÀNG THÔNG MINH</h2>
+  <p class="instruction">
+   Gia đình chuẩn bị bữa cơm. Hãy chọn những hàng hóa
+   cần thiết và đưa vào giỏ hàng nhé!
+   Con có thể nhấn hoặc kéo thả sản phẩm.
+  </p>
+
+  <div class="goods" id="goods"></div>
+
+  <div class="basket" id="basket">
+   <img src="assets/giỏ đựng hàng.png" alt="Giỏ hàng">
+   <h3>GIỎ HÀNG CỦA BÉ</h3>
+   <p id="basketCount">Đã chọn: 0 món</p>
+   <p id="basketList">Giỏ hàng đang trống</p>
+  </div>
+
+  <div class="actions">
+   <button class="secondary" onclick="clearBasket()">CHỌN LẠI</button>
+   <button class="main" onclick="finishRound1()">HOÀN THÀNH ✓</button>
+  </div>
+  <div class="feedback" id="feed1"></div>
+ </div>
+</section>
+
+<!-- VÒNG 2 -->
+<section id="round2" class="screen">
+ <div class="panel">
+  <h2>🧠 VÒNG 2: BÉ LÀ NGƯỜI MUA HÀNG THÔNG MINH</h2>
+  <div class="progress"><div id="progress2"></div></div>
+  <p id="qCount" class="instruction"></p>
+  <div class="question" id="question2"></div>
+  <div class="answers" id="answers2"></div>
+  <div class="feedback" id="feed2"></div>
+  <div class="actions">
+   <button class="main" id="next2" style="display:none" onclick="nextQuestion2()">TIẾP THEO →</button>
+  </div>
+ </div>
+</section>
+
+<!-- VÒNG 3 -->
+<section id="round3" class="screen">
+ <div class="panel">
+  <h2>💰 VÒNG 3: THỬ THÁCH TIẾT KIỆM</h2>
+  <p class="instruction">
+   Gia đình có 100.000 đồng để chuẩn bị bữa ăn.
+   Hãy chọn thực phẩm cần thiết, số lượng vừa đủ
+   và không vượt quá ngân sách nhé!
+  </p>
+  <div class="budgetbar">
+   <div class="budget">Ngân sách: 100.000đ</div>
+   <div class="budget" id="spent">Đã mua: 0đ</div>
+   <div class="budget" id="remain">Còn lại: 100.000đ</div>
+  </div>
+  <div class="shopgrid" id="shopgrid"></div>
+  <div class="actions">
+   <button class="secondary" onclick="resetBudget()">CHỌN LẠI</button>
+   <button class="main" onclick="finishBudget()">CHỐT GIỎ HÀNG ✓</button>
+  </div>
+  <div class="feedback" id="feed3"></div>
+ </div>
+</section>
+
+<!-- TỔNG KẾT -->
+<section id="result" class="screen">
+ <div class="panel result">
+  <img class="trophy" src="assets/cúp chiến thắng.png" alt="Cúp chiến thắng">
+  <div class="stars">★ ★ ★ ★ ★</div>
+  <h2>CHÚC MỪNG NHÀ MUA SẮM TÀI BA!</h2>
+  <p id="resultText"></p>
+  <h2>TỔNG ĐIỂM: <span id="finalScore">0</span></h2>
+  <p id="resultPraise"></p>
+  <img src="assets/hộp quà.png" style="width:100px;height:100px;object-fit:contain">
+  <div>
+   <button class="main" onclick="restartGame()">CHƠI LẠI ↻</button>
+  </div>
+ </div>
+</section>
+
+<p style="text-align:center;font-weight:bold;color:#71869a">
+ Trò chơi học tập – Môn Tự nhiên và Xã hội lớp 2
+</p>
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<script>
+const A="assets/";
+let score=0,sound=true;
+let selected=new Set(),q2=0,answered=false,qty={};
+
+const goods=[
+ ["Gạo","gạo.png"],["Rau củ","rau củ.png"],
+ ["Thịt","thịt.png"],["Trứng","trứng.png"],
+ ["Quần áo","quần áo.png"],["Sách vở","sách vở.png"],
+ ["Gấu bông","gấu bông.png"],["Tivi","tivi.png"],
+ ["Xe máy","xe máy.png"],["Quạt điện","quạt điện.png"]
+];
+
+const essentials=["Gạo","Rau củ","Thịt","Trứng"];
+
+const questions=[
+ {
+  q:"Mẹ nhờ em mua một món để nấu bữa cơm tối. Em nên chọn gì?",
+  a:["Một túi gạo","Một món đồ chơi","Một chiếc tivi","Một chiếc xe máy"],
+  c:0,
+  e:"Gạo là lương thực cần thiết để chuẩn bị bữa ăn."
+ },
+ {
+  q:"Ở nhà vẫn còn nhiều trứng. Khi đi chợ, em nên làm gì?",
+  a:["Mua thêm thật nhiều","Không mua thêm, chọn món còn thiếu","Bỏ trứng cũ đi","Mua đồ chơi"],
+  c:1,
+  e:"Kiểm tra đồ còn ở nhà giúp tránh mua thừa và lãng phí."
+ },
+ {
+  q:"Em thấy một món đồ chơi rất đẹp nhưng gia đình chưa cần. Em nên…",
+  a:["Đòi mua bằng được","Mua hai món","Ưu tiên món gia đình cần","Tự ý lấy tiền mua"],
+  c:2,
+  e:"Người mua hàng thông minh biết phân biệt điều mình thích và điều gia đình cần."
+ },
+ {
+  q:"Khi mua rau củ ở chợ, em nên chọn cách nào?",
+  a:["Chọn rau tươi, vừa đủ dùng","Mua càng nhiều càng tốt","Chọn rau dập nát","Không cần kiểm tra"],
+  c:0,
+  e:"Chọn rau tươi và lượng vừa đủ giúp hạn chế lãng phí."
+ }
+];
+
+const shop=[
+ ["Gạo","gạo.png",20000],
+ ["Rau củ","rau củ.png",15000],
+ ["Thịt","thịt.png",35000],
+ ["Trứng","trứng.png",20000],
+ ["Gấu bông","gấu bông.png",30000],
+ ["Tivi","tivi.png",80000]
+];
+
+function show(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function soundFX(kind){
+ if(!sound)return;
+ try{
+  let ctx=new(window.AudioContext||window.webkitAudioContext)();
+  let o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  let seq=kind==="ok"?[660,880,1100]:kind==="no"?[240,190]:[440,660,880];
+  let now=ctx.currentTime;
+  seq.forEach((f,i)=>o.frequency.setValueAtTime(f,now+i*.12));
+  g.gain.setValueAtTime(.08,now);
+  g.gain.exponentialRampToValueAtTime(.001,now+seq.length*.13);
+  o.start(now);o.stop(now+seq.length*.13);
+  setTimeout(()=>ctx.close(),800);
+ }catch(e){}
+}
+
+function toggleSound(){
+ sound=!sound;
+ document.getElementById("soundBtn").textContent=
+ sound?"🔊 Âm thanh: Bật":"🔇 Âm thanh: Tắt";
+ if(sound)soundFX("start");
+}
+
+function add(n){
+ score+=n;
+ document.getElementById("score").textContent=score;
+}
+
+function startGame(){
+ score=0;selected.clear();qty={};
+ document.getElementById("score").textContent=0;
+ renderGoods();show("round1");soundFX("start");
+}
+
+// VÒNG 1
+function renderGoods(){
+ document.getElementById("goods").innerHTML=goods.map(([n,img])=>`
+  <button class="good ${selected.has(n)?"selected":""}"
+   draggable="true"
+   onclick="toggleGood('${n}')"
+   ondragstart="dragGood(event,'${n}')">
+   <img src="${A+img}" alt="${n}">
+   <span>${n}</span>
+  </button>
+ `).join("");
+ updateBasket();
+}
+
+function toggleGood(n){
+ selected.has(n)?selected.delete(n):selected.add(n);
+ renderGoods();soundFX("start");
+}
+
+function dragGood(event,n){
+ event.dataTransfer.setData("product",n);
+}
+
+document.getElementById("basket").addEventListener("dragover",e=>e.preventDefault());
+document.getElementById("basket").addEventListener("drop",e=>{
+ e.preventDefault();
+ let n=e.dataTransfer.getData("product");
+ if(goods.some(g=>g[0]===n)){
+  selected.add(n);renderGoods();soundFX("start");
+ }
+});
+
+function updateBasket(){
+ document.getElementById("basketCount").textContent="Đã chọn: "+selected.size+" món";
+ document.getElementById("basketList").textContent=
+ selected.size?[...selected].join(" · "):"Giỏ hàng đang trống";
+}
+
+function clearBasket(){
+ selected.clear();renderGoods();
+ document.getElementById("feed1").className="feedback";
+}
+
+function finishRound1(){
+ let good=essentials.filter(x=>selected.has(x)).length;
+ let extra=[...selected].filter(x=>!essentials.includes(x)).length;
+ let f=document.getElementById("feed1");
+ if(good===4&&extra===0){
+  add(20);
+  f.className="feedback show goodfeed";
+  f.textContent="⭐ Tuyệt vời! Con đã chọn đủ thực phẩm cần thiết. +20 điểm";
+  soundFX("ok");stars();
+  setTimeout(()=>{q2=0;renderQ2();show("round2")},1400);
+ }else{
+  f.className="feedback show badfeed";
+  f.textContent="Con hãy chọn đủ gạo, rau củ, thịt và trứng. Hãy thử lại nhé!";
+  soundFX("no");
+ }
+}
+
+// VÒNG 2
+function renderQ2(){
+ let q=questions[q2];answered=false;
+ document.getElementById("qCount").textContent=
+ "Câu "+(q2+1)+" / "+questions.length;
+ document.getElementById("progress2").style.width=
+ (q2/questions.length*100)+"%";
+ document.getElementById("question2").textContent=q.q;
+ document.getElementById("answers2").innerHTML=q.a.map((a,i)=>`
+  <button class="answer" onclick="answerQ2(${i})">
+   ${String.fromCharCode(65+i)}. ${a}
+  </button>
+ `).join("");
+ document.getElementById("feed2").className="feedback";
+ document.getElementById("next2").style.display="none";
+}
+
+function answerQ2(i){
+ if(answered)return;
+ answered=true;
+ let q=questions[q2];
+ let buttons=[...document.querySelectorAll("#answers2 button")];
+ let f=document.getElementById("feed2");
+
+ buttons.forEach((b,j)=>{
+  b.disabled=true;
+  if(j===q.c)b.classList.add("correct");
+  if(j===i&&i!==q.c)b.classList.add("wrong");
+ });
+
+ if(i===q.c){
+  add(10);
+  f.className="feedback show goodfeed";
+  f.textContent="⭐ Chính xác! "+q.e+" +10 điểm";
+  soundFX("ok");stars();
+ }else{
+  f.className="feedback show badfeed";
+  f.textContent="Không sao! "+q.e+" Hãy cố gắng ở câu tiếp theo nhé!";
+  soundFX("no");
+ }
+ document.getElementById("next2").style.display="inline-block";
+ document.getElementById("next2").textContent=
+ q2===questions.length-1?"ĐẾN VÒNG 3 →":"CÂU TIẾP THEO →";
+}
+
+function nextQuestion2(){
+ if(!answered)return;
+ if(q2<questions.length-1){q2++;renderQ2()}
+ else{qty={};renderShop();show("round3")}
+}
+
+// VÒNG 3
+function renderShop(){
+ document.getElementById("shopgrid").innerHTML=shop.map(([n,img,p])=>`
+  <div class="shopitem">
+   <img src="${A+img}" alt="${n}">
+   <div><b>${n}</b><small>${p.toLocaleString("vi-VN")}đ / phần</small></div>
+   <div class="qty">
+    <button onclick="changeQty('${n}',-1)">−</button>
+    <strong>${qty[n]||0}</strong>
+    <button onclick="changeQty('${n}',1)">+</button>
+   </div>
+  </div>
+ `).join("");
+ updateBudget();
+}
+
+function changeQty(n,d){
+ let total=shop.reduce((s,x)=>s+(qty[x[0]]||0)*x[2],0);
+ let item=shop.find(x=>x[0]===n);
+ if(d>0&&total+item[2]>100000){
+  let f=document.getElementById("feed3");
+  f.className="feedback show badfeed";
+  f.textContent="Con sắp vượt ngân sách rồi! Hãy lựa chọn hợp lí nhé.";
+  soundFX("no");return;
+ }
+ qty[n]=Math.max(0,(qty[n]||0)+d);
+ renderShop();
+}
+
+function updateBudget(){
+ let total=shop.reduce((s,x)=>s+(qty[x[0]]||0)*x[2],0);
+ document.getElementById("spent").textContent=
+ "Đã mua: "+total.toLocaleString("vi-VN")+"đ";
+ document.getElementById("remain").textContent=
+ "Còn lại: "+(100000-total).toLocaleString("vi-VN")+"đ";
+}
+
+function resetBudget(){
+ qty={};renderShop();
+ document.getElementById("feed3").className="feedback";
+}
+
+function finishBudget(){
+ let total=shop.reduce((s,x)=>s+(qty[x[0]]||0)*x[2],0);
+ let ess=["Gạo","Rau củ","Thịt","Trứng"].filter(n=>(qty[n]||0)>0).length;
+ let extras=["Gấu bông","Tivi"].some(n=>(qty[n]||0)>0);
+ let f=document.getElementById("feed3");
+
+ if(total>0&&total<=100000&&ess>=3&&!extras){
+  add(30);
+  f.className="feedback show goodfeed";
+  f.textContent="🎉 Xuất sắc! Con đã chọn thực phẩm cần thiết, vừa đủ và tiết kiệm. +30 điểm";
+  soundFX("ok");stars();
+  setTimeout(showResult,1500);
+ }else{
+  f.className="feedback show badfeed";
+  f.textContent="Hãy ưu tiên thực phẩm cần cho bữa ăn, chọn ít nhất 3 loại thực phẩm và tránh mua món chưa cần thiết nhé!";
+  soundFX("no");
+ }
+}
+
+// TỔNG KẾT
+function showResult(){
+ document.getElementById("finalScore").textContent=score;
+ document.getElementById("resultText").textContent=
+ "Con đã hoàn thành cả ba vòng chơi và đạt "+score+" điểm!";
+ document.getElementById("resultPraise").textContent=
+ score>=80?"Con là nhà mua sắm thông minh, biết lựa chọn và tiết kiệm!":
+ score>=50?"Con đã biết lựa chọn hàng hóa hợp lí. Hãy tiếp tục phát huy nhé!":
+ "Cảm ơn con đã tham gia. Hãy tiếp tục luyện tập nhé!";
+ show("result");stars();soundFX("ok");
+}
+
+function restartGame(){
+ selected.clear();qty={};startGame();
+}
+
+function stars(){
+ let box=document.getElementById("confetti");
+ for(let i=0;i<45;i++){
+  let el=document.createElement("i");
+  el.style.setProperty("--x",Math.random()*100+"%");
+  el.style.setProperty("--h",Math.random()*360);
+  box.appendChild(el);
+  setTimeout(()=>el.remove(),3200);
+ }
+}
+</script>
+</body>
+</html>
