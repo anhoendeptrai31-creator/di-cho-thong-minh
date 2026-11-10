@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -9,13 +8,14 @@
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;font-family:Arial,sans-serif;color:#29445c;
+ margin:0;font-family:"Arial",sans-serif;color:#29445c;
  background:linear-gradient(135deg,#d9f4ff,#fff2c9,#ffe2e9);
 }
-button{cursor:pointer;border:0;font-weight:bold;transition:.2s}
+button{cursor:pointer;border:0;font-weight:bold;font-family:inherit;transition:.2s}
 button:hover{transform:translateY(-3px);filter:brightness(1.05)}
-button:active{transform:scale(.96)}
-.app{max-width:1400px;margin:auto;padding:18px}
+button:active{transform:scale(.97)}
+button:disabled{cursor:default;opacity:1}
+.app{max-width:1450px;margin:auto;padding:18px}
 header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .logo{font-size:25px;font-weight:1000;color:#2589bd}
 .score,.sound{
@@ -61,21 +61,27 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 .basket h3{font-size:23px;color:#a96d1b}
 .actions{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-top:20px}
 .feedback{
- display:none;padding:16px;border-radius:16px;text-align:center;
- font-size:19px;font-weight:bold;margin-top:18px;line-height:1.5
+ display:none;padding:20px;border-radius:18px;
+ font-size:18px;line-height:1.65;margin-top:20px;
+ text-align:left;border:2px solid transparent
 }
-.feedback.show{display:block}
-.goodfeed{background:#e0ffea;color:#18834b}
-.badfeed{background:#fff0e6;color:#b65c30}
-.question{text-align:center;font-size:27px;font-weight:bold;margin:30px auto;max-width:1000px}
+.feedback.show{display:block;animation:appear .3s}
+.feedback b{font-size:19px}
+.goodfeed{background:#e5fff0;color:#176b45;border-color:#9be1b6}
+.badfeed{background:#fff5e9;color:#89502c;border-color:#ffd19c}
+.feedback .lesson{
+ display:block;background:#ffffffb8;padding:12px;
+ border-radius:12px;margin-top:12px;color:#226d91
+}
+.question{text-align:center;font-size:27px;font-weight:bold;margin:30px auto;max-width:1000px;line-height:1.4}
 .answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;max-width:1000px;margin:auto}
 .answer{
  background:white;border:3px solid #dcecf5;border-radius:18px;
- padding:20px;font-size:20px;color:#29445c
+ padding:20px;font-size:20px;color:#29445c;text-align:left
 }
-.answer.correct{background:#dfffea;border-color:#42bd79}
-.answer.wrong{background:#ffebe5;border-color:#f28b6b}
-.answer:disabled{cursor:default;transform:none}
+.answer.correct{background:#dfffea;border-color:#42bd79;color:#167346}
+.answer.wrong{background:#ffebe5;border-color:#f28b6b;color:#a94e34}
+.answer:disabled{transform:none}
 .progress{height:13px;background:#e6edf1;border-radius:20px;overflow:hidden}
 .progress div{height:100%;background:#55c68a;width:0;transition:.3s}
 .budgetbar{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px}
@@ -111,6 +117,8 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
  .goods{grid-template-columns:repeat(2,1fr)}
  .answers,.shopgrid{grid-template-columns:1fr}
  .panel{padding:15px}
+ .question{font-size:22px}
+ .feedback{font-size:16px}
 }
 </style>
 </head>
@@ -119,12 +127,12 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 <div class="app">
 
 <header>
- <div class="logo">🛒 ĐI CHỢ THÔNG MINH</div>
+ <div class="logo">ĐI CHỢ THÔNG MINH</div>
  <div class="score">⭐ Điểm: <span id="score">0</span></div>
- <button class="sound" id="soundBtn" onclick="toggleSound()">🔊 Âm thanh: Bật</button>
+ <button class="sound" id="soundBtn" onclick="toggleSound()">Âm thanh: Bật</button>
 </header>
 
-<!-- MÀN HÌNH GIỚI THIỆU -->
+<!-- MÀN HÌNH MỞ ĐẦU -->
 <section id="intro" class="screen active">
  <div class="panel hero">
   <div>
@@ -135,11 +143,11 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
     và học cách tiết kiệm cho gia đình nhé!
    </p>
    <div class="characters">
-    <img src="assets/Cô bé học sinh vui nhộn 9 khung.gif">
-    <img src="assets/Cậu bé vui nhộn trong chín khung hình chuyển động.gif">
-    <img src="assets/Gấu Nâu Vui Nhộn Trong Chín Khung Hình.gif">
+    <img src="assets/Cô bé học sinh vui nhộn 9 khung.gif" alt="Bạn nữ">
+    <img src="assets/Cậu bé vui nhộn trong chín khung hình chuyển động.gif" alt="Bạn nam">
+    <img src="assets/Gấu Nâu Vui Nhộn Trong Chín Khung Hình.gif" alt="Gấu bán hàng">
    </div>
-   <button class="main" onclick="startGame()">▶ BẮT ĐẦU</button>
+   <button class="main" onclick="startGame()">BẮT ĐẦU</button>
   </div>
   <img class="hero-art" src="assets/1.png" alt="Khu chợ">
  </div>
@@ -148,11 +156,11 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 <!-- VÒNG 1 -->
 <section id="round1" class="screen">
  <div class="panel">
-  <h2>🧺 VÒNG 1: GIỎ HÀNG THÔNG MINH</h2>
+  <h2>VÒNG 1: GIỎ HÀNG THÔNG MINH</h2>
   <p class="instruction">
    Gia đình chuẩn bị bữa cơm. Hãy chọn những hàng hóa
    cần thiết và đưa vào giỏ hàng nhé!
-   Con có thể nhấn hoặc kéo thả sản phẩm.
+   Con có thể nhấn hoặc kéo thả hàng hóa vào giỏ.
   </p>
 
   <div class="goods" id="goods"></div>
@@ -166,7 +174,7 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 
   <div class="actions">
    <button class="secondary" onclick="clearBasket()">CHỌN LẠI</button>
-   <button class="main" onclick="finishRound1()">HOÀN THÀNH ✓</button>
+   <button class="main" onclick="finishRound1()">HOÀN THÀNH</button>
   </div>
   <div class="feedback" id="feed1"></div>
  </div>
@@ -175,14 +183,14 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 <!-- VÒNG 2 -->
 <section id="round2" class="screen">
  <div class="panel">
-  <h2>🧠 VÒNG 2: BÉ LÀ NGƯỜI MUA HÀNG THÔNG MINH</h2>
+  <h2>VÒNG 2: BÉ LÀ NGƯỜI MUA HÀNG THÔNG MINH</h2>
   <div class="progress"><div id="progress2"></div></div>
   <p id="qCount" class="instruction"></p>
   <div class="question" id="question2"></div>
   <div class="answers" id="answers2"></div>
   <div class="feedback" id="feed2"></div>
   <div class="actions">
-   <button class="main" id="next2" style="display:none" onclick="nextQuestion2()">TIẾP THEO →</button>
+   <button class="main" id="next2" style="display:none" onclick="nextQuestion2()">TIẾP THEO</button>
   </div>
  </div>
 </section>
@@ -190,27 +198,30 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 <!-- VÒNG 3 -->
 <section id="round3" class="screen">
  <div class="panel">
-  <h2>💰 VÒNG 3: THỬ THÁCH TIẾT KIỆM</h2>
+  <h2>VÒNG 3: THỬ THÁCH TIẾT KIỆM</h2>
   <p class="instruction">
    Gia đình có 100.000 đồng để chuẩn bị bữa ăn.
    Hãy chọn thực phẩm cần thiết, số lượng vừa đủ
    và không vượt quá ngân sách nhé!
   </p>
+
   <div class="budgetbar">
    <div class="budget">Ngân sách: 100.000đ</div>
    <div class="budget" id="spent">Đã mua: 0đ</div>
    <div class="budget" id="remain">Còn lại: 100.000đ</div>
   </div>
+
   <div class="shopgrid" id="shopgrid"></div>
+
   <div class="actions">
    <button class="secondary" onclick="resetBudget()">CHỌN LẠI</button>
-   <button class="main" onclick="finishBudget()">CHỐT GIỎ HÀNG ✓</button>
+   <button class="main" onclick="finishBudget()">CHỐT GIỎ HÀNG</button>
   </div>
   <div class="feedback" id="feed3"></div>
  </div>
 </section>
 
-<!-- TỔNG KẾT -->
+<!-- MÀN HÌNH KẾT THÚC -->
 <section id="result" class="screen">
  <div class="panel result">
   <img class="trophy" src="assets/cúp chiến thắng.png" alt="Cúp chiến thắng">
@@ -219,9 +230,9 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
   <p id="resultText"></p>
   <h2>TỔNG ĐIỂM: <span id="finalScore">0</span></h2>
   <p id="resultPraise"></p>
-  <img src="assets/hộp quà.png" style="width:100px;height:100px;object-fit:contain">
+  <img src="assets/hộp quà.png" style="width:100px;height:100px;object-fit:contain" alt="Hộp quà">
   <div>
-   <button class="main" onclick="restartGame()">CHƠI LẠI ↻</button>
+   <button class="main" onclick="restartGame()">CHƠI LẠI</button>
   </div>
  </div>
 </section>
@@ -235,15 +246,25 @@ h2{font-size:clamp(25px,3vw,40px);color:#2589bd;margin:5px 0 18px}
 
 <script>
 const A="assets/";
-let score=0,sound=true;
-let selected=new Set(),q2=0,answered=false,qty={};
+
+let score=0;
+let sound=true;
+let selected=new Set();
+let q2=0;
+let answered=false;
+let qty={};
 
 const goods=[
- ["Gạo","gạo.png"],["Rau củ","rau củ.png"],
- ["Thịt","thịt.png"],["Trứng","trứng.png"],
- ["Quần áo","quần áo.png"],["Sách vở","sách vở.png"],
- ["Gấu bông","gấu bông.png"],["Tivi","tivi.png"],
- ["Xe máy","xe máy.png"],["Quạt điện","quạt điện.png"]
+ ["Gạo","gạo.png"],
+ ["Rau củ","rau củ.png"],
+ ["Thịt","thịt.png"],
+ ["Trứng","trứng.png"],
+ ["Quần áo","quần áo.png"],
+ ["Sách vở","sách vở.png"],
+ ["Gấu bông","gấu bông.png"],
+ ["Tivi","tivi.png"],
+ ["Xe máy","xe máy.png"],
+ ["Quạt điện","quạt điện.png"]
 ];
 
 const essentials=["Gạo","Rau củ","Thịt","Trứng"];
@@ -253,25 +274,48 @@ const questions=[
   q:"Mẹ nhờ em mua một món để nấu bữa cơm tối. Em nên chọn gì?",
   a:["Một túi gạo","Một món đồ chơi","Một chiếc tivi","Một chiếc xe máy"],
   c:0,
-  e:"Gạo là lương thực cần thiết để chuẩn bị bữa ăn."
+  e:"Gạo là lương thực thiết yếu, giúp gia đình có cơm trong mỗi bữa ăn. Đây là món hàng phù hợp với nhu cầu của gia đình.",
+  wrong:[
+   "Đồ chơi giúp chúng ta vui chơi nhưng không phải thực phẩm để chuẩn bị bữa cơm. Nếu chỉ mua đồ chơi, mẹ vẫn chưa có nguyên liệu cần thiết để nấu ăn.",
+   "Tivi là đồ dùng giải trí, không phải thứ cần mua để nấu bữa tối. Khi đi chợ chuẩn bị bữa ăn, em nên ưu tiên thực phẩm.",
+   "Xe máy là phương tiện đi lại, không phải thực phẩm phục vụ bữa ăn. Em cần chọn món hàng phù hợp với việc mẹ đang nhờ."
+  ]
  },
  {
   q:"Ở nhà vẫn còn nhiều trứng. Khi đi chợ, em nên làm gì?",
   a:["Mua thêm thật nhiều","Không mua thêm, chọn món còn thiếu","Bỏ trứng cũ đi","Mua đồ chơi"],
   c:1,
-  e:"Kiểm tra đồ còn ở nhà giúp tránh mua thừa và lãng phí."
+  e:"Kiểm tra thực phẩm còn trong nhà trước khi đi chợ giúp chúng ta biết mình cần mua gì. Nhờ vậy, gia đình không mua thừa và tránh để thực phẩm bị hỏng.",
+  wrong:[
+   "Nhà đã có nhiều trứng mà mua thêm sẽ khiến thực phẩm dư thừa. Trứng có thể để lâu bị hỏng, vừa lãng phí thức ăn vừa tốn tiền.",
+   "",
+   "Trứng vẫn còn sử dụng được thì không nên vứt bỏ. Chúng ta cần biết trân trọng thực phẩm và sử dụng hợp lí.",
+   "Đồ chơi không giải quyết nhu cầu thực phẩm đang cần cho bữa ăn của gia đình. Em nên kiểm tra xem gia đình còn thiếu món ăn nào."
+  ]
  },
  {
   q:"Em thấy một món đồ chơi rất đẹp nhưng gia đình chưa cần. Em nên…",
   a:["Đòi mua bằng được","Mua hai món","Ưu tiên món gia đình cần","Tự ý lấy tiền mua"],
   c:2,
-  e:"Người mua hàng thông minh biết phân biệt điều mình thích và điều gia đình cần."
+  e:"Biết phân biệt giữa điều mình thích và điều mình thực sự cần là một cách mua sắm thông minh. Em nên ưu tiên những món cần thiết cho gia đình.",
+  wrong:[
+   "Không phải món đồ nào mình thích cũng cần mua ngay. Đòi mua bằng được có thể khiến gia đình khó sắp xếp chi tiêu.",
+   "Mua hai món đồ chơi khi gia đình chưa cần sẽ làm tốn thêm tiền. Số tiền ấy có thể dành cho những nhu cầu quan trọng hơn.",
+   "",
+   "Tiền của gia đình cần được sử dụng hợp lí. Em nên hỏi ý kiến bố mẹ và không tự ý lấy tiền để mua đồ."
+  ]
  },
  {
   q:"Khi mua rau củ ở chợ, em nên chọn cách nào?",
   a:["Chọn rau tươi, vừa đủ dùng","Mua càng nhiều càng tốt","Chọn rau dập nát","Không cần kiểm tra"],
   c:0,
-  e:"Chọn rau tươi và lượng vừa đủ giúp hạn chế lãng phí."
+  e:"Rau tươi thường đảm bảo chất lượng tốt hơn. Mua lượng rau vừa đủ giúp gia đình có thực phẩm ngon và hạn chế thức ăn thừa.",
+  wrong:[
+   "",
+   "Mua quá nhiều rau có thể khiến rau không được sử dụng hết, bị héo hoặc hỏng. Như vậy vừa lãng phí thực phẩm vừa lãng phí tiền.",
+   "Rau bị dập nát có thể không còn tươi ngon. Em nên chọn thực phẩm lành lặn, phù hợp với nhu cầu của gia đình.",
+   "Kiểm tra rau trước khi mua giúp chúng ta lựa chọn được thực phẩm tươi ngon, an toàn và phù hợp."
+  ]
  }
 ];
 
@@ -294,14 +338,18 @@ function soundFX(kind){
  if(!sound)return;
  try{
   let ctx=new(window.AudioContext||window.webkitAudioContext)();
-  let o=ctx.createOscillator(),g=ctx.createGain();
-  o.connect(g);g.connect(ctx.destination);
-  let seq=kind==="ok"?[660,880,1100]:kind==="no"?[240,190]:[440,660,880];
+  let o=ctx.createOscillator();
+  let g=ctx.createGain();
+  o.connect(g);
+  g.connect(ctx.destination);
+  let seq=kind==="ok"?[660,880,1100]:
+          kind==="no"?[240,190]:[440,660,880];
   let now=ctx.currentTime;
   seq.forEach((f,i)=>o.frequency.setValueAtTime(f,now+i*.12));
   g.gain.setValueAtTime(.08,now);
   g.gain.exponentialRampToValueAtTime(.001,now+seq.length*.13);
-  o.start(now);o.stop(now+seq.length*.13);
+  o.start(now);
+  o.stop(now+seq.length*.13);
   setTimeout(()=>ctx.close(),800);
  }catch(e){}
 }
@@ -309,7 +357,7 @@ function soundFX(kind){
 function toggleSound(){
  sound=!sound;
  document.getElementById("soundBtn").textContent=
- sound?"🔊 Âm thanh: Bật":"🔇 Âm thanh: Tắt";
+ sound?"Âm thanh: Bật":"Âm thanh: Tắt";
  if(sound)soundFX("start");
 }
 
@@ -318,13 +366,30 @@ function add(n){
  document.getElementById("score").textContent=score;
 }
 
-function startGame(){
- score=0;selected.clear();qty={};
- document.getElementById("score").textContent=0;
- renderGoods();show("round1");soundFX("start");
+function hideFeedback(id){
+ let f=document.getElementById(id);
+ f.className="feedback";
+ f.innerHTML="";
 }
 
-// VÒNG 1
+function startGame(){
+ score=0;
+ selected.clear();
+ qty={};
+ q2=0;
+ document.getElementById("score").textContent=0;
+ hideFeedback("feed1");
+ hideFeedback("feed2");
+ hideFeedback("feed3");
+ renderGoods();
+ show("round1");
+ soundFX("start");
+}
+
+// =======================
+// VÒNG 1: GIỎ HÀNG
+// =======================
+
 function renderGoods(){
  document.getElementById("goods").innerHTML=goods.map(([n,img])=>`
   <button class="good ${selected.has(n)?"selected":""}"
@@ -339,71 +404,124 @@ function renderGoods(){
 }
 
 function toggleGood(n){
- selected.has(n)?selected.delete(n):selected.add(n);
- renderGoods();soundFX("start");
+ if(selected.has(n)){
+  selected.delete(n);
+ }else{
+  selected.add(n);
+ }
+ renderGoods();
+ soundFX("start");
 }
 
 function dragGood(event,n){
  event.dataTransfer.setData("product",n);
 }
 
-document.getElementById("basket").addEventListener("dragover",e=>e.preventDefault());
+document.getElementById("basket").addEventListener("dragover",e=>{
+ e.preventDefault();
+});
+
 document.getElementById("basket").addEventListener("drop",e=>{
  e.preventDefault();
  let n=e.dataTransfer.getData("product");
  if(goods.some(g=>g[0]===n)){
-  selected.add(n);renderGoods();soundFX("start");
+  selected.add(n);
+  renderGoods();
+  soundFX("start");
  }
 });
 
 function updateBasket(){
- document.getElementById("basketCount").textContent="Đã chọn: "+selected.size+" món";
+ document.getElementById("basketCount").textContent=
+ "Đã chọn: "+selected.size+" món";
+
  document.getElementById("basketList").textContent=
  selected.size?[...selected].join(" · "):"Giỏ hàng đang trống";
 }
 
 function clearBasket(){
- selected.clear();renderGoods();
- document.getElementById("feed1").className="feedback";
+ selected.clear();
+ renderGoods();
+ hideFeedback("feed1");
 }
 
 function finishRound1(){
  let good=essentials.filter(x=>selected.has(x)).length;
  let extra=[...selected].filter(x=>!essentials.includes(x)).length;
  let f=document.getElementById("feed1");
+
  if(good===4&&extra===0){
   add(20);
   f.className="feedback show goodfeed";
-  f.textContent="⭐ Tuyệt vời! Con đã chọn đủ thực phẩm cần thiết. +20 điểm";
-  soundFX("ok");stars();
-  setTimeout(()=>{q2=0;renderQ2();show("round2")},1400);
+  f.innerHTML=
+   "<b>CHÍNH XÁC! Con đã hoàn thành giỏ hàng!</b><br><br>"+
+   "Con đã lựa chọn đủ gạo, rau củ, thịt và trứng để chuẩn bị bữa ăn cho gia đình. "+
+   "Con cũng biết phân biệt thực phẩm cần thiết với những món chưa cần mua trong tình huống này."+
+   '<span class="lesson"><b>BÀI HỌC:</b> Trước khi mua hàng, hãy xác định gia đình cần gì, ưu tiên những món cần thiết và không mua theo sở thích nhất thời.</span>'+
+   "<br><b>Phần thưởng: +20 điểm!</b>";
+  soundFX("ok");
+  stars();
+  setTimeout(()=>{
+   q2=0;
+   renderQ2();
+   show("round2");
+  },3000);
  }else{
+  let missing=essentials.filter(x=>!selected.has(x));
+  let extraNames=[...selected].filter(x=>!essentials.includes(x));
+  let reason="";
+
+  if(missing.length){
+   reason+="Giỏ hàng còn thiếu: <b>"+missing.join(", ")+"</b>. Đây là những thực phẩm cần thiết để chuẩn bị bữa ăn.";
+  }
+  if(extraNames.length){
+   reason+=(reason?"<br><br>":"")+
+   "Con đã chọn thêm: <b>"+extraNames.join(", ")+"</b>. Những món này không phải thực phẩm cần thiết cho bữa cơm trong tình huống này.";
+  }
+  if(!selected.size){
+   reason="Giỏ hàng vẫn đang trống. Gia đình cần thực phẩm để chuẩn bị bữa ăn, vì vậy con hãy chọn những món cần thiết nhé.";
+  }
+
   f.className="feedback show badfeed";
-  f.textContent="Con hãy chọn đủ gạo, rau củ, thịt và trứng. Hãy thử lại nhé!";
+  f.innerHTML=
+   "<b>GIỎ HÀNG CHƯA THẬT HỢP LÍ! Không sao, con hãy thử lại nhé!</b><br><br>"+
+   reason+
+   '<span class="lesson"><b>BÀI HỌC:</b> Khi đi chợ, chúng ta cần xác định mục đích mua hàng. Hãy ưu tiên thực phẩm cần dùng cho bữa ăn, không chọn những món chưa cần thiết.</span>'+
+   "<br>Con có thể nhấn CHỌN LẠI để thực hiện lại.";
   soundFX("no");
  }
 }
 
-// VÒNG 2
+// =======================
+// VÒNG 2: TÌNH HUỐNG
+// =======================
+
 function renderQ2(){
- let q=questions[q2];answered=false;
+ let q=questions[q2];
+ answered=false;
+
  document.getElementById("qCount").textContent=
- "Câu "+(q2+1)+" / "+questions.length;
+ "Câu hỏi "+(q2+1)+" / "+questions.length;
+
  document.getElementById("progress2").style.width=
  (q2/questions.length*100)+"%";
+
  document.getElementById("question2").textContent=q.q;
+
  document.getElementById("answers2").innerHTML=q.a.map((a,i)=>`
   <button class="answer" onclick="answerQ2(${i})">
    ${String.fromCharCode(65+i)}. ${a}
   </button>
  `).join("");
- document.getElementById("feed2").className="feedback";
+
+ hideFeedback("feed2");
  document.getElementById("next2").style.display="none";
 }
 
 function answerQ2(i){
  if(answered)return;
  answered=true;
+
  let q=questions[q2];
  let buttons=[...document.querySelectorAll("#answers2 button")];
  let f=document.getElementById("feed2");
@@ -417,30 +535,56 @@ function answerQ2(i){
  if(i===q.c){
   add(10);
   f.className="feedback show goodfeed";
-  f.textContent="⭐ Chính xác! "+q.e+" +10 điểm";
-  soundFX("ok");stars();
+  f.innerHTML=
+   "<b>CHÍNH XÁC! Con thật thông minh!</b><br><br>"+
+   q.e+
+   '<span class="lesson"><b>ĐIỀU CON CẦN GHI NHỚ:</b> '+q.e+
+   "</span><br><b>Phần thưởng: +10 điểm!</b>";
+  soundFX("ok");
+  stars();
  }else{
   f.className="feedback show badfeed";
-  f.textContent="Không sao! "+q.e+" Hãy cố gắng ở câu tiếp theo nhé!";
+  f.innerHTML=
+   "<b>CHƯA ĐÚNG RỒI! Không sao, chúng ta cùng tìm hiểu nhé!</b><br><br>"+
+   "<b>Con đã chọn:</b> "+q.a[i]+"<br><br>"+
+   "<b>Vì sao lựa chọn này chưa phù hợp?</b><br>"+
+   q.wrong[i]+"<br><br>"+
+   "<b>Đáp án phù hợp:</b> "+q.a[q.c]+
+   '<span class="lesson"><b>BÀI HỌC:</b> '+q.e+
+   "</span><br>Con hãy ghi nhớ để lần sau trở thành người mua hàng thông minh hơn nhé!";
   soundFX("no");
  }
+
  document.getElementById("next2").style.display="inline-block";
  document.getElementById("next2").textContent=
- q2===questions.length-1?"ĐẾN VÒNG 3 →":"CÂU TIẾP THEO →";
+  q2===questions.length-1?"ĐẾN VÒNG 3":"CÂU TIẾP THEO";
 }
 
 function nextQuestion2(){
  if(!answered)return;
- if(q2<questions.length-1){q2++;renderQ2()}
- else{qty={};renderShop();show("round3")}
+
+ if(q2<questions.length-1){
+  q2++;
+  renderQ2();
+ }else{
+  qty={};
+  renderShop();
+  show("round3");
+ }
 }
 
-// VÒNG 3
+// =======================
+// VÒNG 3: TIẾT KIỆM
+// =======================
+
 function renderShop(){
  document.getElementById("shopgrid").innerHTML=shop.map(([n,img,p])=>`
   <div class="shopitem">
    <img src="${A+img}" alt="${n}">
-   <div><b>${n}</b><small>${p.toLocaleString("vi-VN")}đ / phần</small></div>
+   <div>
+    <b>${n}</b>
+    <small>${p.toLocaleString("vi-VN")}đ / phần</small>
+   </div>
    <div class="qty">
     <button onclick="changeQty('${n}',-1)">−</button>
     <strong>${qty[n]||0}</strong>
@@ -448,72 +592,130 @@ function renderShop(){
    </div>
   </div>
  `).join("");
+
  updateBudget();
 }
 
 function changeQty(n,d){
  let total=shop.reduce((s,x)=>s+(qty[x[0]]||0)*x[2],0);
  let item=shop.find(x=>x[0]===n);
+
  if(d>0&&total+item[2]>100000){
   let f=document.getElementById("feed3");
   f.className="feedback show badfeed";
-  f.textContent="Con sắp vượt ngân sách rồi! Hãy lựa chọn hợp lí nhé.";
-  soundFX("no");return;
+  f.innerHTML=
+   "<b>Con sắp vượt quá ngân sách rồi!</b><br><br>"+
+   "Gia đình chỉ có 100.000 đồng. Nếu mua thêm món này, số tiền cần trả sẽ vượt quá số tiền gia đình đang có."+
+   '<span class="lesson"><b>GỢI Ý:</b> Con hãy xem lại những món đã chọn và cân nhắc bỏ bớt món chưa cần thiết nhé.</span>';
+  soundFX("no");
+  return;
  }
+
  qty[n]=Math.max(0,(qty[n]||0)+d);
+ hideFeedback("feed3");
  renderShop();
 }
 
 function updateBudget(){
  let total=shop.reduce((s,x)=>s+(qty[x[0]]||0)*x[2],0);
+
  document.getElementById("spent").textContent=
  "Đã mua: "+total.toLocaleString("vi-VN")+"đ";
+
  document.getElementById("remain").textContent=
  "Còn lại: "+(100000-total).toLocaleString("vi-VN")+"đ";
 }
 
 function resetBudget(){
- qty={};renderShop();
- document.getElementById("feed3").className="feedback";
+ qty={};
+ renderShop();
+ hideFeedback("feed3");
 }
 
 function finishBudget(){
  let total=shop.reduce((s,x)=>s+(qty[x[0]]||0)*x[2],0);
- let ess=["Gạo","Rau củ","Thịt","Trứng"].filter(n=>(qty[n]||0)>0).length;
- let extras=["Gấu bông","Tivi"].some(n=>(qty[n]||0)>0);
+ let chosen=shop.filter(x=>(qty[x[0]]||0)>0);
+ let food=["Gạo","Rau củ","Thịt","Trứng"];
+ let ess=food.filter(n=>(qty[n]||0)>0).length;
+ let extras=["Gấu bông","Tivi"].filter(n=>(qty[n]||0)>0);
  let f=document.getElementById("feed3");
 
- if(total>0&&total<=100000&&ess>=3&&!extras){
+ if(total===0){
+  f.className="feedback show badfeed";
+  f.innerHTML=
+   "<b>Giỏ hàng chưa có sản phẩm!</b><br><br>"+
+   "Gia đình đã có ngân sách 100.000 đồng để chuẩn bị bữa ăn. Con cần lựa chọn thực phẩm phù hợp trước khi thanh toán."+
+   '<span class="lesson"><b>BÀI HỌC:</b> Mua sắm thông minh là biết sử dụng số tiền mình có để đáp ứng nhu cầu cần thiết.</span>';
+  soundFX("no");
+  return;
+ }
+
+ if(ess>=3&&extras.length===0){
   add(30);
   f.className="feedback show goodfeed";
-  f.textContent="🎉 Xuất sắc! Con đã chọn thực phẩm cần thiết, vừa đủ và tiết kiệm. +30 điểm";
-  soundFX("ok");stars();
-  setTimeout(showResult,1500);
+  f.innerHTML=
+   "<b>HOAN HÔ! Con đã mua sắm rất hợp lí!</b><br><br>"+
+   "Con đã lựa chọn "+ess+" loại thực phẩm cần thiết, không mua đồ chưa cần và không vượt quá ngân sách."+
+   "<br><br><b>Số tiền đã sử dụng:</b> "+total.toLocaleString("vi-VN")+" đồng."+
+   "<br><b>Số tiền còn lại:</b> "+(100000-total).toLocaleString("vi-VN")+" đồng."+
+   '<span class="lesson"><b>BÀI HỌC:</b> Tiết kiệm không có nghĩa là không mua sắm. Tiết kiệm là biết ưu tiên những thứ cần thiết, chọn số lượng vừa đủ và sử dụng tiền hợp lí.</span>'+
+   "<br><b>Phần thưởng: +30 điểm!</b>";
+  soundFX("ok");
+  stars();
+  setTimeout(showResult,3500);
  }else{
+  let reason="";
+
+  if(ess<3){
+   reason+="Con mới chọn "+ess+" loại thực phẩm cần thiết. Hãy ưu tiên thêm các món như gạo, rau củ, thịt hoặc trứng để bữa ăn đa dạng hơn.";
+  }
+
+  if(extras.length){
+   reason+=(reason?"<br><br>":"")+
+   "Con đã chọn "+extras.join(", ")+". Đây là những món chưa cần thiết khi gia đình đang dành ngân sách để chuẩn bị bữa ăn.";
+  }
+
   f.className="feedback show badfeed";
-  f.textContent="Hãy ưu tiên thực phẩm cần cho bữa ăn, chọn ít nhất 3 loại thực phẩm và tránh mua món chưa cần thiết nhé!";
+  f.innerHTML=
+   "<b>GIỎ HÀNG CHƯA THẬT TIẾT KIỆM! Con hãy suy nghĩ thêm nhé!</b><br><br>"+
+   reason+
+   "<br><br><b>Số tiền đang sử dụng:</b> "+total.toLocaleString("vi-VN")+" đồng."+
+   "<br><b>Số tiền còn lại:</b> "+(100000-total).toLocaleString("vi-VN")+" đồng."+
+   '<span class="lesson"><b>BÀI HỌC:</b> Khi có một khoản tiền giới hạn, chúng ta cần lập kế hoạch mua sắm, ưu tiên thực phẩm cần thiết và cân nhắc trước khi chọn những món chưa thực sự cần.</span>'+
+   "<br>Con hãy chọn lại giỏ hàng để hoàn thành thử thách nhé!";
   soundFX("no");
  }
 }
 
-// TỔNG KẾT
+// =======================
+// TỔNG KẾT VÀ PHẦN THƯỞNG
+// =======================
+
 function showResult(){
  document.getElementById("finalScore").textContent=score;
+
  document.getElementById("resultText").textContent=
  "Con đã hoàn thành cả ba vòng chơi và đạt "+score+" điểm!";
+
  document.getElementById("resultPraise").textContent=
- score>=80?"Con là nhà mua sắm thông minh, biết lựa chọn và tiết kiệm!":
- score>=50?"Con đã biết lựa chọn hàng hóa hợp lí. Hãy tiếp tục phát huy nhé!":
- "Cảm ơn con đã tham gia. Hãy tiếp tục luyện tập nhé!";
- show("result");stars();soundFX("ok");
+ score>=80?
+ "Con là nhà mua sắm thông minh, biết lựa chọn và tiết kiệm!":
+ score>=50?
+ "Con đã biết lựa chọn hàng hóa hợp lí. Hãy tiếp tục phát huy nhé!":
+ "Cảm ơn con đã tham gia. Hãy tiếp tục luyện tập để mua sắm thông minh hơn nhé!";
+
+ show("result");
+ stars();
+ soundFX("ok");
 }
 
 function restartGame(){
- selected.clear();qty={};startGame();
+ startGame();
 }
 
 function stars(){
  let box=document.getElementById("confetti");
+
  for(let i=0;i<45;i++){
   let el=document.createElement("i");
   el.style.setProperty("--x",Math.random()*100+"%");
