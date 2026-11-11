@@ -201,7 +201,7 @@ h2{font-size:clamp(24px,3vw,37px);color:var(--blue);margin:5px 0 18px}
 <header>
  <div class="logo">🛒 ĐI CHỢ THÔNG MINH</div>
  <div class="topbox">⭐ Điểm: <span id="score">0</span></div>
- <div class="topbox">⏰ <span id="timer">03:00</span></div>
+ <div class="topbox">⏰ <span id="timer">05:00</span></div>
  <button class="secondary" id="soundBtn" onclick="toggleSound()">Âm thanh: Bật</button>
  <button class="teacher-btn" onclick="teacherLogin()">👩‍🏫 GIÁO VIÊN</button>
 </header>
@@ -265,6 +265,9 @@ h2{font-size:clamp(24px,3vw,37px);color:var(--blue);margin:5px 0 18px}
    <button class="main" onclick="finishRound1()">HOÀN THÀNH</button>
   </div>
   <div class="feedback" id="feed1"></div>
+  <div class="actions">
+   <button class="main" id="nextRound1" style="display:none" onclick="goToRound2()">ĐẾN VÒNG 2 →</button>
+  </div>
  </div>
 </section>
 
@@ -308,6 +311,9 @@ h2{font-size:clamp(24px,3vw,37px);color:var(--blue);margin:5px 0 18px}
    <button class="main" onclick="finishBudget()">CHỐT GIỎ HÀNG</button>
   </div>
   <div class="feedback" id="feed3"></div>
+  <div class="actions">
+   <button class="main" id="nextRound3" style="display:none" onclick="nextRound3()">XEM KẾT QUẢ</button>
+  </div>
  </div>
 </section>
 
@@ -385,7 +391,6 @@ h2{font-size:clamp(24px,3vw,37px);color:var(--blue);margin:5px 0 18px}
 </div>
 
 <div class="confetti" id="confetti"></div>
-
 <script>
 // ====================================
 // 1. DỮ LIỆU VÀ BIẾN
@@ -393,7 +398,7 @@ h2{font-size:clamp(24px,3vw,37px);color:var(--blue);margin:5px 0 18px}
 
 const A="assets/";
 const TEACHER_PASSWORD="Oendeptrai";
-const GAME_SECONDS=180;
+const GAME_SECONDS=300;
 const BUDGET=100000;
 
 let score=0;
@@ -674,6 +679,8 @@ function startGame(){
  hideFeedback("feed1");
  hideFeedback("feed2");
  hideFeedback("feed3");
+ document.getElementById("nextRound1").style.display="none";
+ document.getElementById("nextRound3").style.display="none";
 
  renderGoods();
 
@@ -699,7 +706,7 @@ function finishGame(reason){
 
  document.getElementById("resultPraise").textContent=
   reason==="timeout"?
-  "Đã hết thời gian 3 phút. Con hãy xem lại những điều mình đã học nhé!":
+  "Đã hết thời gian 5 phút. Con hãy xem lại những điều đã học nhé!":
   score>=80?
   "Con là nhà mua sắm thông minh, biết lựa chọn và tiết kiệm!":
   score>=50?
@@ -718,7 +725,7 @@ function finishGame(reason){
 function backToHome(){
  clearInterval(timerInterval);
  document.getElementById("studentName").value="";
- document.getElementById("timer").textContent="03:00";
+ document.getElementById("timer").textContent="05:00";
  show("intro");
 }
 
@@ -811,12 +818,7 @@ function finishRound1(){
   soundFX("ok");
   stars();
 
-  setTimeout(()=>{
-   if(finished)return;
-   q2=0;
-   renderQ2();
-   show("round2");
-  },2500);
+  document.getElementById("nextRound1").style.display="inline-block";
 
  }else{
   let reason="";
@@ -843,7 +845,14 @@ function finishRound1(){
  }
 }
 
-// ====================================
+function goToRound2(){
+ if(finished || !round1Done)return;
+ document.getElementById("nextRound1").style.display="none";
+ q2=0;
+ renderQ2();
+ show("round2");
+}
+ // ====================================
 // 6. VÒNG 2 - TÌNH HUỐNG
 // ====================================
 
@@ -1052,9 +1061,7 @@ function finishBudget(){
   soundFX("ok");
   stars();
 
-  setTimeout(()=>{
-   if(!finished)finishGame("complete");
-  },2500);
+  document.getElementById("nextRound3").style.display="inline-block";
 
  }else{
   let reason="";
@@ -1084,7 +1091,16 @@ function finishBudget(){
 }
 
 // ====================================
-// 8. KHU VỰC GIÁO VIÊN
+// 8. CHUYỂN SANG KẾT QUẢ
+// ====================================
+
+function nextRound3(){
+ if(finished || !round3Done)return;
+ document.getElementById("nextRound3").style.display="none";
+ finishGame("complete");
+}
+ // ====================================
+// 9. KHU VỰC GIÁO VIÊN
 // ====================================
 
 function teacherLogin(){
@@ -1230,7 +1246,7 @@ function exportCSV(){
 }
 
 // ====================================
-// 9. KHỞI TẠO
+// 10. KHỞI TẠO TRÒ CHƠI
 // ====================================
 
 document.getElementById("studentName").addEventListener("keydown",e=>{
